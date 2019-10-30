@@ -121,6 +121,14 @@ def mine():
         return jsonify(response), 400
 
     # Forge the new Block by adding it to the chain with the proof
+    block_string = json.dumps(blockchain.last_block, sort_keys=True).encode()
+    if not blockchain.valid_proof(block_string, data['proof']):
+        response = {
+            'message': 'Block has already been mined.'
+        }
+
+        return jsonify(response), 200
+
     previous_hash = blockchain.hash(blockchain.last_block)
     block = blockchain.new_block(data['proof'], previous_hash)
 
